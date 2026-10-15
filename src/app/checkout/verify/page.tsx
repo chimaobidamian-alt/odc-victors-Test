@@ -1,2 +1,23 @@
- "use client";
-import {useEffect,useState} from "react";import Link from "next/link";import {useSearchParams} from "next/navigation";export default function Verify(){const params=useSearchParams();const [message,setMessage]=useState("Verifying test payment…");useEffect(()=>{(async()=>{const reference=params.get("reference");if(!reference){setMessage("No payment reference was returned.");return}const res=await fetch(`/api/paystack/verify?reference=${encodeURIComponent(reference)}`);const d=await res.json();setMessage(res.ok?"Payment verified successfully. Your test order is being processed.":d.error||"Payment could not be verified.")})();},[params]);return <div className="wrap page-pad empty-state"><div className="eyebrow">PAYSTACK TEST MODE</div><h1>Payment <em>status.</em></h1><p>{message}</p><Link href="/account/orders" className="btn btn-dark">View my orders</Link></div>}
+"use client";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+
+function VerifyContent() {
+  const searchParams = useSearchParams();
+  // your existing verify logic here, keep it
+  // e.g. const ref = searchParams.get("reference")
+  return (
+    <div className="p-8 text-center">
+      <h1 className="text-2xl font-bold">Verifying payment...</h1>
+      <p>Reference: {searchParams.get("reference")}</p>
+    </div>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+      <VerifyContent />
+    </Suspense>
+  );
+}

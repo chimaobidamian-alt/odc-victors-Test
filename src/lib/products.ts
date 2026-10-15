@@ -1,4 +1,4 @@
-// src/lib/products.ts - NOW USING REAL SUPABASE DATA
+// src/lib/products.ts - NOW USING REAL SUPABASE DATA - FIXED
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -27,17 +27,19 @@ export async function getProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
     .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching products:', error)
     return []
   }
 
+  if (!data) return []
+
   return data.map((p: any) => ({
     ...p,
-    image: p.image_url,
+    image: p.image_url || p.image || '',
+    images: p.images || (p.image_url ? [p.image_url] : []),
+    sizes: p.sizes || [],
   }))
 }
 
@@ -46,13 +48,18 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     .from('products')
     .select('*')
     .eq('slug', slug)
-    .single()
+    .maybeSingle()
 
-  if (error) return null
+  if (error || !data) {
+    console.error('Error fetching product:', error)
+    return null
+  }
 
   return {
     ...data,
-    image: data.image_url,
+    image: data.image_url || data.image || '',
+    images: data.images || (data.image_url ? [data.image_url] : []),
+    sizes: data.sizes || [],
   }
 }
 

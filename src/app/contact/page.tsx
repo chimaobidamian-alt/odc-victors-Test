@@ -1,2 +1,26 @@
- "use client";
-import {useState} from "react";export default function Contact(){const [name,setName]=useState(""),[email,setEmail]=useState(""),[message,setMessage]=useState("");return <div className="wrap page-pad"><div className="page-intro"><div className="eyebrow">WE'RE HERE TO HELP</div><h1>Let's <em>talk.</em></h1><p>Need help with sizing, an order or choosing the right piece? Get in touch.</p></div><div className="contact-layout"><div className="contact-details"><h2>Good service is part of the craft.</h2><p>We’re happy to help you find your fit or answer questions about our handmade pieces.</p><a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER||"2348000000000"}`} className="contact-link">◉ WhatsApp support ↗</a><a href="mailto:hello@odcvictors.example" className="contact-link">✉ hello@odcvictors.example</a><p className="foot-note">Port Harcourt, Rivers State, Nigeria</p></div><form className="form-card" onSubmit={e=>{e.preventDefault();window.location.href=`mailto:hello@odcvictors.example?subject=${encodeURIComponent("ODC VICTORS enquiry from "+name)}&body=${encodeURIComponent(message+"\\n\\nFrom: "+name+" ("+email+")")}}><h2>Send us a message</h2><label>Your name<input required value={name} onChange={e=>setName(e.target.value)}/></label><label>Email address<input required type="email" value={email} onChange={e=>setEmail(e.target.value)}/></label><label>How can we help?<textarea required rows={5} value={message} onChange={e=>setMessage(e.target.value)}/></label><button className="btn btn-dark full-btn">Open email to send ↗</button><small>This demo opens your email app; messages are not stored.</small></form></div></div>}
+"use client";
+import { useState } from "react";
+
+export default function Contact() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert(`Thanks ${name}, we received your message!`);
+    setName(""); setEmail(""); setMessage("");
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input className="w-full border p-3 rounded" placeholder="Your Name" value={name} onChange={e=>setName(e.target.value)} required />
+        <input className="w-full border p-3 rounded" placeholder="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
+        <textarea className="w-full border p-3 rounded h-32" placeholder="Message" value={message} onChange={e=>setMessage(e.target.value)} required />
+        <button className="bg-black text-white px-6 py-3 rounded w-full">Send Message</button>
+      </form>
+    </div>
+  );
+}

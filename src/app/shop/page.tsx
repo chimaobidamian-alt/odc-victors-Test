@@ -1,11 +1,11 @@
 "use client";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, Search, ArrowUpDown } from "lucide-react";
 import { getProducts, money, Product } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 
-export default function Shop(){
+function ShopContent(){
   const params = useSearchParams();
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [category,setCategory]=useState(params.get("category")||"All");
@@ -18,7 +18,6 @@ export default function Shop(){
   
   const categories=["All","Men","Women","Shoes","Sandals","Pams","Belts","Wallets"];
 
-  // Fetch from Supabase
   useEffect(() => {
     getProducts().then(setAllProducts);
   }, []);
@@ -67,5 +66,13 @@ export default function Shop(){
       </div>
     </div>
   </div>
+  )
+}
+
+export default function Shop(){
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading shop...</div>}>
+      <ShopContent />
+    </Suspense>
   )
 }
